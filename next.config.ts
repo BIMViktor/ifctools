@@ -19,6 +19,24 @@ const nextConfig: NextConfig = {
     "@ifc-lite/drawing-2d",
     "laz-perf",
   ],
+  webpack(config) {
+    // laz-perf ships a Vite-style `laz-perf.wasm?url` import so bundlers
+    // copy the binary as a static asset and return its URL. Webpack 5 does
+    // not understand the `?url` query natively; without this rule it tries
+    // to parse the WASM binary as a WebAssembly module, then fails because
+    // it can't resolve the WASM host-import namespaces ('env',
+    // 'wasi_snapshot_preview1') as JS modules.
+    config.module.rules.push({
+      test: /\.wasm$/,
+      resourceQuery: /url/,
+      type: "asset/resource",
+    });
+
+    // For any .wasm that is NOT imported with ?url (rare), enable the async
+    // WebAssembly experiment so webpack handles host imports correctly.
+    config.experiments = { ...config.experiments, asyncWebAssembly: true };
+    return config;
+  },
 };
 
 export default nextConfig;

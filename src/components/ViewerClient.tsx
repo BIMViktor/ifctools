@@ -118,7 +118,7 @@ export default function ViewerClient() {
       const gp = new GeometryProcessor();
       await gp.init();
 
-      const meshes: import("@ifc-lite/geometry").Mesh[] = [];
+      const meshes: import("@ifc-lite/geometry").MeshData[] = [];
       let batchCount = 0;
       for await (const event of gp.processAdaptive(new Uint8Array(buffer))) {
         if (event.type === "batch") {
@@ -139,7 +139,7 @@ export default function ViewerClient() {
         schemaVersion: store.schemaVersion ?? "IFC",
       });
 
-      setHierarchy(store.spatialHierarchy.project ?? null);
+      setHierarchy(store.spatialHierarchy?.project ?? null);
       setProgress(100);
       setProgressLabel("Done");
       setStatus("ready");
