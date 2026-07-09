@@ -72,7 +72,9 @@ const ALL_TOOLS: Tool[] = [
   {
     name: "IFC Recolourer",
     description: "Color-code elements by discipline using standard color profiles.",
+    href: "/tools/colorizer",
     icon: Palette,
+    live: true,
     category: "View",
   },
 
@@ -153,7 +155,9 @@ const ALL_TOOLS: Tool[] = [
   {
     name: "Reduce IFC File Size",
     description: "One-click deep clean and mesh simplification to shrink files 30–70%.",
+    href: "/tools/reduce",
     icon: Minimize2,
+    live: true,
     popular: true,
     category: "Clean",
   },

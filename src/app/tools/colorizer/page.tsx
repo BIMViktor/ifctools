@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import ColorizerClient from "@/components/ColorizerClient";
+import RecolourerClient from "@/components/RecolourerClient";
 
 export const metadata: Metadata = {
-  title: "IFC Recolourer — ifctools.io",
+  title: "IFC Recolourer — ifc2go.com",
   description:
-    "Recolour IFC elements by type with discipline-standard colours and export the modified IFC. No install required.",
+    "Auto-generate discipline colour profiles from IFC class or system data and export a colour-coded IFC file.",
 };
 
-export default function ColorizerPage() {
-  return <ColorizerClient />;
+export default function RecolourerPage() {
+  return <RecolourerClient />;
 }
