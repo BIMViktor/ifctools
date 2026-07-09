@@ -8,9 +8,9 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "ifctools.io — The IFC toolkit for BIM coordinators",
+  title: "ifc2go — Every IFC tool you need, free in your browser",
   description:
-    "View, validate, extract, recolour, merge and split IFC files — all running in your browser, with no installs and no per-seat licences.",
+    "Clean, validate, edit and organize IFC files instantly. No installs, no licence fees. IFC2x3, IFC4, IFC4.3 supported.",
 };
 
 export default function RootLayout({
