@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-dvh flex flex-col bg-zinc-950 text-zinc-100">
+      <body className="min-h-dvh flex flex-col bg-gray-50 text-gray-900">
         {children}
       </body>
     </html>

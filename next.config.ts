@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     "@ifc-lite/drawing-2d",
     "laz-perf",
   ],
+  // Empty turbopack section tells Next.js 16 that the webpack config below is
+  // intentional and the dev server should not warn about the mismatch.
+  turbopack: {},
   webpack(config) {
     // laz-perf ships a Vite-style `laz-perf.wasm?url` import so bundlers
     // copy the binary as a static asset and return its URL. Webpack 5 does
