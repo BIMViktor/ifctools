@@ -80,13 +80,17 @@ const ALL_TOOLS: Tool[] = [
   {
     name: "Merge IFC",
     description: "Combine separate discipline models into one federated file.",
+    href: "/tools/merge",
     icon: Combine,
+    live: true,
     category: "Organize",
   },
   {
     name: "Split IFC",
     description: "Divide an IFC model by storey, building, type, or property.",
+    href: "/tools/split",
     icon: Scissors,
+    live: true,
     category: "Organize",
   },
   {
