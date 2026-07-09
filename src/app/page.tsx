@@ -7,7 +7,6 @@ import {
   Eye,
   GitCompareArrows,
   Palette,
-  MessageSquare,
   Layers,
   Combine,
   Scissors,
@@ -74,12 +73,6 @@ const ALL_TOOLS: Tool[] = [
     name: "IFC Recolourer",
     description: "Color-code elements by discipline using standard color profiles.",
     icon: Palette,
-    category: "View",
-  },
-  {
-    name: "BCF Viewer",
-    description: "Visualize BCF issues and viewports directly on the 3D model.",
-    icon: MessageSquare,
     category: "View",
   },
 
