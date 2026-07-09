@@ -65,7 +65,9 @@ const ALL_TOOLS: Tool[] = [
   {
     name: "Compare IFC Files",
     description: "Visually highlight additions, deletions, and moves between two versions.",
+    href: "/tools/compare",
     icon: GitCompareArrows,
+    live: true,
     category: "View",
   },
   {
