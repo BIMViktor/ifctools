@@ -5,21 +5,34 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import {
   Eye,
-  Palette,
-  Minimize2,
-  Scissors,
-  GitMerge,
-  FileSpreadsheet,
-  ShieldCheck,
   GitCompareArrows,
-  Zap,
-  Table,
-  FileJson,
-  FileCode2,
-  ScanSearch,
-  Building2,
-  Flag,
+  Palette,
+  MessageSquare,
   Layers,
+  Combine,
+  Scissors,
+  RefreshCw,
+  Move,
+  Network,
+  FileText,
+  FileSpreadsheet,
+  ArrowUpFromLine,
+  Sliders,
+  Calculator,
+  Type,
+  Trash2,
+  Minimize2,
+  Package,
+  UserX,
+  Eraser,
+  FileOutput,
+  FileCode,
+  Box,
+  DownloadCloud,
+  ShieldCheck,
+  FilePlus,
+  Flame,
+  Activity,
   Clock,
   LucideIcon,
 } from "lucide-react";
@@ -39,10 +52,10 @@ type Tool = {
 // ─── Tool registry ───────────────────────────────────────────────────────────
 
 const ALL_TOOLS: Tool[] = [
-  // View & Explore
+  // ── View ──────────────────────────────────────────────────────────────────
   {
     name: "IFC Viewer",
-    description: "Explore any IFC model in 3D — structure tree, properties, section cuts.",
+    description: "Explore models in 3D with tree structure and properties.",
     href: "/viewer",
     icon: Eye,
     live: true,
@@ -50,137 +63,177 @@ const ALL_TOOLS: Tool[] = [
     category: "View",
   },
   {
+    name: "Compare IFC Files",
+    description: "Visually highlight additions, deletions, and moves between two versions.",
+    icon: GitCompareArrows,
+    category: "View",
+  },
+  {
     name: "IFC Recolourer",
-    description: "Colour-code elements by discipline using Praxi standard colours.",
-    href: "/tools/colorizer",
+    description: "Color-code elements by discipline using standard color profiles.",
     icon: Palette,
-    live: true,
-    popular: true,
     category: "View",
   },
   {
     name: "BCF Viewer",
-    description: "Visualise BCF issues directly on the 3D model. Share issue links.",
-    icon: Flag,
-    category: "View",
-  },
-  {
-    name: "Storey Plan",
-    description: "Auto-generate 2D floor plans per storey from any IFC file.",
-    icon: Layers,
+    description: "Visualize BCF issues and viewports directly on the 3D model.",
+    icon: MessageSquare,
     category: "View",
   },
 
-  // Organize
+  // ── Organize ──────────────────────────────────────────────────────────────
   {
-    name: "IFC Splitter",
-    description: "Split a model by discipline, storey, or type into separate files.",
+    name: "Merge IFC",
+    description: "Combine separate discipline models into one federated file.",
+    icon: Combine,
+    category: "Organize",
+  },
+  {
+    name: "Split IFC",
+    description: "Divide an IFC model by storey, building, type, or property.",
     icon: Scissors,
-    popular: true,
     category: "Organize",
   },
   {
-    name: "IFC Merger",
-    description: "Combine multiple IFC files into one coordinated model.",
-    icon: GitMerge,
+    name: "Schema Converter",
+    description: "Upgrade or downgrade models between IFC2x3, IFC4, and IFC4.3.",
+    icon: RefreshCw,
     category: "Organize",
   },
   {
-    name: "IFC Size Reducer",
-    description: "Strip geometry LOD and unused data. Cut file size 30–70%.",
-    icon: Minimize2,
-    popular: true,
+    name: "Model Transformer",
+    description: "Shift, rotate, scale, or fix georeferencing and coordinates.",
+    icon: Move,
     category: "Organize",
   },
   {
-    name: "IFC Repair",
-    description: "Fix corrupt GUIDs, dangling references, and invalid geometry.",
-    icon: Zap,
+    name: "Manage IFC Storeys",
+    description: "Reassign elements that were exported on the wrong level.",
+    icon: Network,
     category: "Organize",
   },
 
-  // Properties
+  // ── Properties ────────────────────────────────────────────────────────────
   {
     name: "Property Extractor",
-    description: "Export all element properties to Excel or CSV in one click.",
-    icon: Table,
+    description: "Export all element properties and quantities to Excel or CSV in one click.",
+    href: "/tools/property-extractor",
+    icon: FileSpreadsheet,
+    live: true,
     popular: true,
     category: "Properties",
   },
   {
-    name: "IFC → Excel",
-    description: "Full property table with storey, type, and custom Pset columns.",
-    icon: FileSpreadsheet,
-    category: "Properties",
-  },
-  {
-    name: "Class Mapper",
-    description: "Remap IFC types and Psets in bulk using a simple mapping table.",
-    icon: GitCompareArrows,
+    name: "Excel to IFC",
+    description: "Update IFC properties by importing values from an edited spreadsheet.",
+    href: "/tools/excel-to-ifc",
+    icon: ArrowUpFromLine,
+    live: true,
     category: "Properties",
   },
   {
     name: "Property Editor",
-    description: "Add, remove, or update Psets and properties across elements.",
-    icon: ScanSearch,
+    description: "Add, remove, or bulk-edit property sets and parameters on the fly.",
+    icon: Sliders,
+    category: "Properties",
+  },
+  {
+    name: "Quantity Takeoff",
+    description: "Generate grouped element quantities without a desktop takeoff tool.",
+    icon: Calculator,
+    category: "Properties",
+  },
+  {
+    name: "Bulk Rename by Pattern",
+    description: "Standardize element names in bulk using dynamic token patterns.",
+    icon: Type,
     category: "Properties",
   },
 
-  // Convert
+  // ── Clean ─────────────────────────────────────────────────────────────────
   {
-    name: "IFC → glTF",
-    description: "Convert IFC geometry to glTF / GLB for web and game engines.",
-    icon: FileCode2,
+    name: "Reduce IFC File Size",
+    description: "One-click deep clean and mesh simplification to shrink files 30–70%.",
+    icon: Minimize2,
+    popular: true,
+    category: "Clean",
+  },
+  {
+    name: "Keep Only Physical Elements",
+    description: "Strip spaces, zones, 2D layers, and grids to leave only physical geometry.",
+    icon: Package,
+    category: "Clean",
+  },
+  {
+    name: "Delete IFC Elements",
+    description: "Remove entire categories (like rebar or proxy objects) from the model.",
+    icon: Trash2,
+    category: "Clean",
+  },
+  {
+    name: "Anonymize IFC",
+    description: "Scrub authors, organizations, and application headers before external sharing.",
+    icon: UserX,
+    category: "Clean",
+  },
+  {
+    name: "Delete IFC Properties",
+    description: "Strip sensitive metadata, costs, or internal notes before sharing.",
+    icon: Eraser,
+    category: "Clean",
+  },
+
+  // ── Convert ───────────────────────────────────────────────────────────────
+  {
+    name: "IFC to CAD (2D)",
+    description: "Generate flat 2D floor plans and sections with clean per-class DXF/SVG layers.",
+    icon: FileCode,
     category: "Convert",
   },
   {
-    name: "IFC → COBie",
-    description: "Export facilities management data in COBie spreadsheet format.",
-    icon: Building2,
+    name: "IFC to DXF (3D)",
+    description: "Convert IFC geometry to a lightweight 3D triangle mesh for AutoCAD.",
+    icon: Box,
     category: "Convert",
   },
   {
-    name: "IFC → JSON",
-    description: "Serialize the full IFC model as a structured JSON document.",
-    icon: FileJson,
-    category: "Convert",
-  },
-  {
-    name: "Schema Upgrader",
-    description: "Migrate IFC2x3 models to IFC4 or IFC4.3 automatically.",
-    icon: Layers,
+    name: "Navisworks Exporter",
+    description: "Link to our free open-source desktop plug-in for Navisworks coordinate files.",
+    icon: DownloadCloud,
     category: "Convert",
   },
 
-  // Validate
+  // ── Validate ──────────────────────────────────────────────────────────────
   {
     name: "IFC Validator",
     description: "Check schema compliance and required properties against IDS rules.",
+    href: "/tools/validator",
     icon: ShieldCheck,
+    live: true,
     popular: true,
     category: "Validate",
   },
   {
-    name: "IFC Diff",
-    description: "Compare two model versions and highlight exactly what changed.",
-    icon: GitCompareArrows,
+    name: "IDS Maker",
+    description: "Author and edit buildingSMART IDS specification files visually without XML.",
+    icon: FilePlus,
     category: "Validate",
   },
   {
-    name: "Clash Detector",
-    description: "Find hard and soft clashes between disciplines. Export to BCF.",
-    icon: Zap,
+    name: "IFC Clash Detection",
+    description: "Detect geometric conflicts and intersection issues between building systems.",
+    icon: Flame,
     category: "Validate",
   },
   {
-    name: "BBR Validator",
-    description: "Validate against Swedish BBR building regulations.",
-    icon: Flag,
+    name: "IFC Health Check",
+    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
+    icon: Activity,
     category: "Validate",
   },
 ];
 
-const CATEGORIES = ["All", "View", "Organize", "Properties", "Convert", "Validate"] as const;
+const CATEGORIES = ["All", "View", "Organize", "Properties", "Clean", "Convert", "Validate"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
