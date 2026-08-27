@@ -164,7 +164,9 @@ const ALL_TOOLS: Tool[] = [
   {
     name: "Keep Only Physical Elements",
     description: "Strip spaces, zones, 2D layers, and grids to leave only physical geometry.",
+    href: "/tools/keep-physical",
     icon: Package,
+    live: true,
     category: "Clean",
   },
   {
