@@ -16,180 +16,190 @@ type Tool = {
   name: string;
   description: string;
   status: ToolStatus;
+  chips?: string[];
 };
 
-type Category = {
-  id: string;
-  name: string;
-  tools: Tool[];
-};
-
-/**
- * Same slimmed matrix as the homepage.
- * Section `id`s match Navbar hash links (#view, #clean, #data, #validate).
- */
-const categories: Category[] = [
+const LIVE_TOOLS: Tool[] = [
   {
-    id: "view",
-    name: "View & Explore",
-    tools: [
-      {
-        slug: "viewer",
-        href: "/viewer",
-        name: "IFC Viewer",
-        description:
-          "Drop an IFC2x3, IFC4, or IFC4.3 file and explore it with project tree, properties, and WebGPU 3D navigation.",
-        status: "live",
-      },
-      {
-        slug: "compare",
-        href: "/tools/compare",
-        name: "Compare IFC Files",
-        description:
-          "Visually highlight additions, deletions, and moves between two model versions.",
-        status: "live",
-      },
-      {
-        slug: "colorizer",
-        href: "/tools/colorizer",
-        name: "IFC Recolourer",
-        description:
-          "Recolour IFC elements by type or discipline and export the modified IFC.",
-        status: "live",
-      },
-    ],
+    slug: "viewer",
+    href: "/viewer",
+    name: "View IFC",
+    description:
+      "Drop an IFC2x3, IFC4, or IFC4.3 file and explore it with project tree, properties, and WebGPU 3D.",
+    status: "live",
+    chips: ["Local WASM", "IFC → 3D"],
   },
   {
-    id: "clean",
-    name: "Clean & Optimize",
-    tools: [
-      {
-        slug: "reduce",
-        href: "/tools/reduce",
-        name: "Reduce IFC File Size",
-        description:
-          "One-click deep clean to shrink files — strip unused entities and reduce model weight.",
-        status: "live",
-      },
-      {
-        slug: "keep-physical",
-        href: "/tools/keep-physical",
-        name: "Keep Only Physical Elements",
-        description:
-          "Strip spaces, zones, 2D annotations and grids, leaving only physical geometry.",
-        status: "live",
-      },
-      {
-        slug: "sanitize",
-        name: "Sanitize IFC",
-        description:
-          "Anonymize authors and strip sensitive properties before external sharing.",
-        status: "soon",
-      },
-    ],
+    slug: "compare",
+    href: "/tools/compare",
+    name: "Compare IFC",
+    description: "Highlight additions, deletions, and changes between two model versions.",
+    status: "live",
+    chips: ["IFC → Diff", "Local WASM"],
   },
   {
-    id: "data",
-    name: "Data & Convert",
-    tools: [
-      {
-        slug: "property-extractor",
-        href: "/tools/property-extractor",
-        name: "Property Extractor",
-        description:
-          "Export property sets, quantities and attributes to CSV — opens directly in Excel.",
-        status: "live",
-      },
-      {
-        slug: "property-editor",
-        name: "Property Editor",
-        description:
-          "Add, rename, delete and bulk-edit IFC property sets directly in the browser.",
-        status: "soon",
-      },
-      {
-        slug: "merge",
-        href: "/tools/merge",
-        name: "Merge IFC",
-        description:
-          "Combine multiple IFC files into one federated model. GlobalIds and hierarchy preserved.",
-        status: "live",
-      },
-      {
-        slug: "split",
-        href: "/tools/split",
-        name: "Split IFC",
-        description:
-          "Split a model by storey, building, or type. Every output is a valid standalone IFC.",
-        status: "live",
-      },
-      {
-        slug: "model-transformer",
-        name: "Model Transformer",
-        description:
-          "Shift, rotate, scale, or fix georeferencing and coordinates.",
-        status: "soon",
-      },
-      {
-        slug: "ifc-to-cad",
-        name: "IFC to CAD (2D)",
-        description:
-          "Generate flat 2D floor plans and sections with clean per-class DXF/SVG layers.",
-        status: "soon",
-      },
-      {
-        slug: "ifc-to-gltf",
-        name: "IFC to glTF / GLB",
-        description:
-          "Convert IFC models to glTF or GLB for web viewers, game engines, and XR.",
-        status: "soon",
-      },
-    ],
+    slug: "colorizer",
+    href: "/tools/colorizer",
+    name: "Recolour IFC",
+    description: "Recolour elements by type or discipline and export the modified IFC.",
+    status: "live",
+    chips: ["IFC → IFC"],
   },
   {
-    id: "validate",
-    name: "Validate & Check",
-    tools: [
-      {
-        slug: "validator",
-        href: "/tools/validator",
-        name: "IDS Validator",
-        description:
-          "Validate models against buildingSMART IDS. Review failures in 3D and export as BCF 2.1.",
-        status: "live",
-      },
-      {
-        slug: "health-check",
-        name: "IFC Health Check",
-        description:
-          "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
-        status: "soon",
-      },
-      {
-        slug: "ids-maker",
-        name: "IDS Maker",
-        description:
-          "Author and edit buildingSMART IDS specification files visually without XML.",
-        status: "soon",
-      },
-      {
-        slug: "bsab",
-        name: "BSAB / CoClass",
-        description:
-          "Classify and validate IFC elements against BSAB 96 and CoClass for Nordic workflows.",
-        status: "soon",
-      },
-    ],
+    slug: "merge",
+    href: "/tools/merge",
+    name: "Merge IFC",
+    description:
+      "Combine multiple IFC files into one federated model. GlobalIds and hierarchy preserved.",
+    status: "live",
+    chips: ["IFC → IFC"],
+  },
+  {
+    slug: "split",
+    href: "/tools/split",
+    name: "Split IFC",
+    description:
+      "Split a model by storey, building, or type. Every output is a valid standalone IFC.",
+    status: "live",
+    chips: ["IFC → IFC"],
+  },
+  {
+    slug: "property-extractor",
+    href: "/tools/property-extractor",
+    name: "Extract Properties",
+    description: "Export property sets, quantities and attributes to CSV — opens in Excel.",
+    status: "live",
+    chips: ["IFC → CSV"],
+  },
+  {
+    slug: "reduce",
+    href: "/tools/reduce",
+    name: "Reduce IFC Size",
+    description: "One-click deep clean to shrink files — strip unused entities and model weight.",
+    status: "live",
+    chips: ["IFC → IFC"],
+  },
+  {
+    slug: "keep-physical",
+    href: "/tools/keep-physical",
+    name: "Keep Only Physical",
+    description: "Strip spaces, zones, 2D annotations and grids, leaving only physical geometry.",
+    status: "live",
+    chips: ["IFC → IFC"],
+  },
+  {
+    slug: "validator",
+    href: "/tools/validator",
+    name: "Validate IDS",
+    description:
+      "Validate against buildingSMART IDS. Review failures in 3D and export as BCF 2.1.",
+    status: "live",
+    chips: ["IFC + IDS → BCF"],
   },
 ];
 
-export default function ToolsPage() {
-  const liveCount = categories.reduce(
-    (sum, cat) => sum + cat.tools.filter((t) => t.status === "live").length,
-    0
-  );
-  const totalCount = categories.reduce((sum, cat) => sum + cat.tools.length, 0);
+const SOON_TOOLS: Tool[] = [
+  {
+    slug: "model-transformer",
+    name: "Transform Model",
+    description: "Shift, rotate, scale, or fix georeferencing and coordinates.",
+    status: "soon",
+  },
+  {
+    slug: "property-editor",
+    name: "Edit Properties",
+    description: "Add, rename, delete and bulk-edit IFC property sets directly in the browser.",
+    status: "soon",
+  },
+  {
+    slug: "sanitize",
+    name: "Sanitize IFC",
+    description: "Anonymize authors and strip sensitive properties before external sharing.",
+    status: "soon",
+  },
+  {
+    slug: "ifc-to-cad",
+    name: "Export CAD (2D)",
+    description: "Generate flat 2D floor plans and sections with clean DXF/SVG layers.",
+    status: "soon",
+  },
+  {
+    slug: "health-check",
+    name: "Check IFC Health",
+    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
+    status: "soon",
+  },
+  {
+    slug: "ids-maker",
+    name: "Make IDS",
+    description: "Author and edit buildingSMART IDS specification files visually without XML.",
+    status: "soon",
+  },
+];
 
+function ToolCard({ tool }: { tool: Tool }) {
+  const isLive = tool.status === "live" && Boolean(tool.href);
+
+  const card = (
+    <div
+      className={`group relative rounded-2xl border bg-white p-5 transition-all h-full flex flex-col ${
+        isLive
+          ? "border-gray-200 hover:border-teal-300 hover:shadow-md cursor-pointer"
+          : "border-gray-100 cursor-default"
+      }`}
+    >
+      <div className="flex items-start justify-between mb-3 gap-3">
+        <h3
+          className={`text-sm font-semibold ${
+            isLive ? "text-gray-900 group-hover:text-teal-700" : "text-gray-400"
+          }`}
+        >
+          {tool.name}
+        </h3>
+        {isLive ? (
+          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-teal-700 bg-teal-50 border border-teal-100 rounded-full px-2 py-0.5">
+            Live
+          </span>
+        ) : (
+          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
+            Soon
+          </span>
+        )}
+      </div>
+      <p className={`text-xs leading-relaxed flex-1 ${isLive ? "text-gray-500" : "text-gray-400"}`}>
+        {tool.description}
+      </p>
+      {isLive && tool.chips && tool.chips.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {tool.chips.map((chip) => (
+            <span
+              key={chip}
+              className="text-[10px] font-medium text-teal-700 bg-teal-50 border border-teal-100 rounded-md px-1.5 py-0.5"
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      )}
+      {isLive && (
+        <div className="mt-3 text-xs text-teal-600 font-medium group-hover:translate-x-0.5 transition-transform">
+          Open tool →
+        </div>
+      )}
+    </div>
+  );
+
+  if (isLive && tool.href) {
+    return (
+      <Link href={tool.href} className="h-full">
+        {card}
+      </Link>
+    );
+  }
+  return card;
+}
+
+export default function ToolsPage() {
   return (
     <div className="flex flex-col min-h-dvh bg-[#F9FAFB]">
       <Navbar />
@@ -202,73 +212,32 @@ export default function ToolsPage() {
             Free, online, in your browser. No installs, no licences — files never leave your machine.
           </p>
           <p className="mt-3 text-xs text-gray-400">
-            {liveCount} live · {totalCount - liveCount} coming soon
+            {LIVE_TOOLS.length} live · {SOON_TOOLS.length} coming soon
           </p>
         </div>
 
-        <div className="space-y-12">
-          {categories.map((cat) => (
-            <section key={cat.id} id={cat.id} className="scroll-mt-20">
-              <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
-                {cat.name}
-              </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {cat.tools.map((tool) => {
-                  const isLive = tool.status === "live" && Boolean(tool.href);
-                  const card = (
-                    <div
-                      className={`group relative rounded-2xl border bg-white p-5 transition-all h-full ${
-                        isLive
-                          ? "border-gray-200 hover:border-teal-300 hover:shadow-md cursor-pointer"
-                          : "border-gray-100 cursor-default"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-3 gap-3">
-                        <h3
-                          className={`text-sm font-semibold ${
-                            isLive
-                              ? "text-gray-900 group-hover:text-teal-700"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {tool.name}
-                        </h3>
-                        {isLive ? (
-                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-teal-700 bg-teal-50 border border-teal-100 rounded-full px-2 py-0.5">
-                            Live
-                          </span>
-                        ) : (
-                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
-                            Soon
-                          </span>
-                        )}
-                      </div>
-                      <p
-                        className={`text-xs leading-relaxed ${
-                          isLive ? "text-gray-500" : "text-gray-400"
-                        }`}
-                      >
-                        {tool.description}
-                      </p>
-                      {isLive && (
-                        <div className="mt-3 text-xs text-teal-600 font-medium group-hover:translate-x-0.5 transition-transform">
-                          Open tool →
-                        </div>
-                      )}
-                    </div>
-                  );
+        <div className="space-y-14">
+          <section id="live" className="scroll-mt-20">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
+              Live tools
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {LIVE_TOOLS.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </section>
 
-                  return isLive && tool.href ? (
-                    <Link key={tool.slug} href={tool.href} className="h-full">
-                      {card}
-                    </Link>
-                  ) : (
-                    <div key={tool.slug}>{card}</div>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+          <section id="soon" className="scroll-mt-20">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
+              Coming soon
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {SOON_TOOLS.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </section>
         </div>
       </main>
 

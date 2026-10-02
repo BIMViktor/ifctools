@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import HeroDropZone from "@/components/HeroDropZone";
 import {
   Eye,
   GitCompareArrows,
@@ -16,12 +16,12 @@ import {
   Package,
   Eraser,
   FileCode,
-  Box,
   ShieldCheck,
   FilePlus,
   Activity,
-  Grid3x3,
   Clock,
+  Zap,
+  Cpu,
   LucideIcon,
 } from "lucide-react";
 
@@ -30,155 +30,123 @@ type Tool = {
   description: string;
   href?: string;
   icon: LucideIcon;
-  live?: boolean;
-  popular?: boolean;
-  category: string;
+  live: boolean;
+  chips?: string[];
 };
 
-/**
- * Slimmed product matrix (~12–16 tools).
- * Only tools with real routes may set `live: true`.
- */
-const ALL_TOOLS: Tool[] = [
-  // ── View ──────────────────────────────────────────────────────────────────
+const LIVE_TOOLS: Tool[] = [
   {
-    name: "IFC Viewer",
+    name: "View IFC",
     description: "Explore models in 3D with tree structure and properties.",
     href: "/viewer",
     icon: Eye,
     live: true,
-    popular: true,
-    category: "View",
+    chips: ["Local WASM", "IFC → 3D"],
   },
   {
-    name: "Compare IFC Files",
-    description: "Visually highlight additions, deletions, and moves between two versions.",
+    name: "Compare IFC",
+    description: "Highlight additions, deletions, and changes between two versions.",
     href: "/tools/compare",
     icon: GitCompareArrows,
     live: true,
-    category: "View",
+    chips: ["IFC → Diff", "Local WASM"],
   },
   {
-    name: "IFC Recolourer",
+    name: "Recolour IFC",
     description: "Color-code elements by discipline using standard color profiles.",
     href: "/tools/colorizer",
     icon: Palette,
     live: true,
-    category: "View",
+    chips: ["IFC → IFC"],
   },
-
-  // ── Organize ──────────────────────────────────────────────────────────────
   {
     name: "Merge IFC",
     description: "Combine separate discipline models into one federated file.",
     href: "/tools/merge",
     icon: Combine,
     live: true,
-    category: "Organize",
+    chips: ["IFC → IFC"],
   },
   {
     name: "Split IFC",
-    description: "Divide an IFC model by storey, building, type, or property.",
+    description: "Divide a model by storey, building, type, or property.",
     href: "/tools/split",
     icon: Scissors,
     live: true,
-    category: "Organize",
+    chips: ["IFC → IFC"],
   },
   {
-    name: "Model Transformer",
-    description: "Shift, rotate, scale, or fix georeferencing and coordinates.",
-    icon: Move,
-    category: "Organize",
-  },
-
-  // ── Properties ────────────────────────────────────────────────────────────
-  {
-    name: "Property Extractor",
-    description: "Export all element properties and quantities to Excel or CSV in one click.",
+    name: "Extract Properties",
+    description: "Export element properties and quantities to CSV for Excel.",
     href: "/tools/property-extractor",
     icon: FileSpreadsheet,
     live: true,
-    popular: true,
-    category: "Properties",
+    chips: ["IFC → CSV"],
   },
   {
-    name: "Property Editor",
-    description: "Add, remove, or bulk-edit property sets and parameters on the fly.",
-    icon: Sliders,
-    category: "Properties",
-  },
-
-  // ── Clean ─────────────────────────────────────────────────────────────────
-  {
-    name: "Reduce IFC File Size",
-    description: "One-click deep clean and mesh simplification to shrink files 30–70%.",
+    name: "Reduce IFC Size",
+    description: "One-click deep clean to shrink files 30–70%.",
     href: "/tools/reduce",
     icon: Minimize2,
     live: true,
-    popular: true,
-    category: "Clean",
+    chips: ["IFC → IFC"],
   },
   {
-    name: "Keep Only Physical Elements",
-    description: "Strip spaces, zones, 2D layers, and grids to leave only physical geometry.",
+    name: "Keep Only Physical",
+    description: "Strip spaces, zones, 2D layers, and grids — keep physical geometry.",
     href: "/tools/keep-physical",
     icon: Package,
     live: true,
-    category: "Clean",
+    chips: ["IFC → IFC"],
   },
   {
-    name: "Sanitize IFC",
-    description: "Anonymize authors and strip sensitive properties before external sharing.",
-    icon: Eraser,
-    category: "Clean",
-  },
-
-  // ── Convert ───────────────────────────────────────────────────────────────
-  {
-    name: "IFC to CAD (2D)",
-    description: "Generate flat 2D floor plans and sections with clean per-class DXF/SVG layers.",
-    icon: FileCode,
-    category: "Convert",
-  },
-  {
-    name: "IFC to glTF / GLB",
-    description: "Convert IFC geometry to glTF or GLB for web viewers, game engines, and XR.",
-    icon: Box,
-    category: "Convert",
-  },
-
-  // ── Validate ──────────────────────────────────────────────────────────────
-  {
-    name: "IDS Validator",
-    description: "Validate models against buildingSMART IDS and export failures as BCF 2.1.",
+    name: "Validate IDS",
+    description: "Check models against buildingSMART IDS and export failures as BCF.",
     href: "/tools/validator",
     icon: ShieldCheck,
     live: true,
-    popular: true,
-    category: "Validate",
-  },
-  {
-    name: "IFC Health Check",
-    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
-    icon: Activity,
-    category: "Validate",
-  },
-  {
-    name: "IDS Maker",
-    description: "Author and edit buildingSMART IDS specification files visually without XML.",
-    icon: FilePlus,
-    category: "Validate",
-  },
-  {
-    name: "BSAB / CoClass",
-    description: "Classify and validate elements against Nordic BSAB 96 and CoClass standards.",
-    icon: Grid3x3,
-    category: "Validate",
+    chips: ["IFC + IDS → BCF"],
   },
 ];
 
-const CATEGORIES = ["All", "View", "Organize", "Properties", "Clean", "Convert", "Validate"] as const;
-type Category = (typeof CATEGORIES)[number];
+const SOON_TOOLS: Tool[] = [
+  {
+    name: "Transform Model",
+    description: "Shift, rotate, scale, or fix georeferencing and coordinates.",
+    icon: Move,
+    live: false,
+  },
+  {
+    name: "Edit Properties",
+    description: "Add, remove, or bulk-edit property sets and parameters on the fly.",
+    icon: Sliders,
+    live: false,
+  },
+  {
+    name: "Sanitize IFC",
+    description: "Anonymize authors and strip sensitive properties before sharing.",
+    icon: Eraser,
+    live: false,
+  },
+  {
+    name: "Export CAD (2D)",
+    description: "Generate flat 2D floor plans and sections as DXF/SVG layers.",
+    icon: FileCode,
+    live: false,
+  },
+  {
+    name: "Check IFC Health",
+    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
+    icon: Activity,
+    live: false,
+  },
+  {
+    name: "Make IDS",
+    description: "Author buildingSMART IDS specification files visually without XML.",
+    icon: FilePlus,
+    live: false,
+  },
+];
 
 function ToolCard({ tool }: { tool: Tool }) {
   const Icon = tool.icon;
@@ -208,7 +176,7 @@ function ToolCard({ tool }: { tool: Tool }) {
         <Icon className="w-4.5 h-4.5" strokeWidth={1.75} />
       </div>
 
-      <div>
+      <div className="min-w-0 flex-1">
         <p
           className={`text-sm font-semibold leading-snug transition-colors ${
             tool.live ? "text-gray-900 group-hover:text-teal-700" : "text-gray-400"
@@ -220,6 +188,19 @@ function ToolCard({ tool }: { tool: Tool }) {
           {tool.description}
         </p>
       </div>
+
+      {tool.live && tool.chips && tool.chips.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
+          {tool.chips.map((chip) => (
+            <span
+              key={chip}
+              className="text-[10px] font-medium text-teal-700 bg-teal-50 border border-teal-100 rounded-md px-1.5 py-0.5"
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -234,99 +215,128 @@ function ToolCard({ tool }: { tool: Tool }) {
 }
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<Category>("All");
-
-  const popularTools = ALL_TOOLS.filter((t) => t.popular);
-  const filteredTools =
-    activeTab === "All" ? ALL_TOOLS : ALL_TOOLS.filter((t) => t.category === activeTab);
-
-  const liveCount = ALL_TOOLS.filter((t) => t.live).length;
-  const totalCount = ALL_TOOLS.length;
-
   return (
     <>
       <Navbar />
 
       <main className="flex-1 bg-[#F9FAFB]">
-        <section className="bg-white border-b border-gray-100">
-          <div className="max-w-6xl mx-auto px-6 py-14 sm:py-16 text-center">
-            <h1 className="text-4xl sm:text-[2.75rem] font-bold tracking-tight text-gray-900 leading-[1.15]">
-              Every IFC tool you need —{" "}
-              <span className="text-teal-600">free in your browser.</span>
-            </h1>
-            <p className="mt-4 text-lg text-gray-500 max-w-lg mx-auto leading-relaxed">
-              Clean, validate, edit and organize IFC files instantly.
-              No installs, 100% private.
-            </p>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/viewer"
-                className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm transition-colors shadow-sm"
-              >
-                Open sample building
-              </Link>
-              <a
-                href="#tools"
-                className="px-6 py-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-sm transition-colors"
-              >
-                Browse all tools
-              </a>
-            </div>
-          </div>
-        </section>
+        <HeroDropZone />
 
         <div className="max-w-6xl mx-auto px-6">
-          <section className="pt-10 pb-6">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
-              Popular tools
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {popularTools.map((tool) => (
-                <ToolCard key={tool.name} tool={tool} />
-              ))}
+          <section id="tools" className="pt-10 pb-12 scroll-mt-20">
+            <div id="live" className="scroll-mt-20">
+              <div className="flex items-end justify-between gap-4 mb-4">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                    Live tools
+                  </p>
+                  <h2 className="text-xl font-bold text-gray-900">Ready to use now</h2>
+                </div>
+                <p className="text-xs text-gray-400 shrink-0">
+                  {LIVE_TOOLS.length} live · {SOON_TOOLS.length} coming soon
+                </p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {LIVE_TOOLS.map((tool) => (
+                  <ToolCard key={tool.name} tool={tool} />
+                ))}
+              </div>
+            </div>
+
+            <div id="soon" className="mt-14 scroll-mt-20">
+              <div className="mb-4">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-1">
+                  Coming soon
+                </p>
+                <h2 className="text-xl font-bold text-gray-900">On the roadmap</h2>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {SOON_TOOLS.map((tool) => (
+                  <ToolCard key={tool.name} tool={tool} />
+                ))}
+              </div>
             </div>
           </section>
 
-          <section id="tools" className="pb-20">
-            <div className="flex items-center justify-between flex-wrap gap-4 mb-6 pt-4 border-t border-gray-200">
-              <div className="flex gap-1 flex-wrap">
-                {CATEGORIES.map((cat) => {
-                  const count =
-                    cat === "All"
-                      ? totalCount
-                      : ALL_TOOLS.filter((t) => t.category === cat).length;
+          <section id="pricing" className="pb-16 scroll-mt-20">
+            <div className="pt-4 border-t border-gray-200 rounded-2xl">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Pricing
+              </p>
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-3">
+                Free for core tools. Pro when you need it.
+              </h2>
+              <p className="text-sm text-gray-500 max-w-xl leading-relaxed mb-6">
+                All live tools are free to use in your browser — no upload, no account required.
+                Log in is only for Pro licensing and billing. Files are never stored.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-3 max-w-2xl">
+                <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                  <p className="text-sm font-semibold text-gray-900">Free</p>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                    Viewer, compare, merge, split, extract, reduce, validate — all client-side.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-teal-200 bg-teal-50/40 p-5">
+                  <p className="text-sm font-semibold text-gray-900">Pro</p>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                    Coming soon — team seats, priority features, and billing via Log in.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="about" className="pb-20 scroll-mt-20">
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Why ifc2go?
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-3">
+                Built for privacy-first BIM workflows
+              </h2>
+              <p className="text-sm text-gray-500 max-w-xl mb-8 leading-relaxed">
+                Every tool runs locally in your browser. No uploads, no accounts,
+                no waiting for a server to process your model.
+              </p>
+
+              <div className="grid sm:grid-cols-3 gap-3">
+                {[
+                  {
+                    icon: ShieldCheck,
+                    title: "100% client-side",
+                    body: "Files never leave your machine. Zero upload — NDA and GDPR friendly by design.",
+                  },
+                  {
+                    icon: Zap,
+                    title: "Instant WASM + WebGPU",
+                    body: "Parse, render and export large IFC models with near-native speed in the browser.",
+                  },
+                  {
+                    icon: Cpu,
+                    title: "No registration",
+                    body: "Core tools work immediately. Open a file and go — no signup, no licence friction.",
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
                   return (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveTab(cat)}
-                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                        activeTab === cat
-                          ? "bg-teal-600 text-white shadow-sm"
-                          : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300 hover:text-teal-700"
-                      }`}
+                    <div
+                      key={item.title}
+                      className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6"
                     >
-                      {cat}
-                      <span
-                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                          activeTab === cat ? "bg-teal-500 text-white" : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {count}
-                      </span>
-                    </button>
+                      <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-4">
+                        <Icon className="w-4.5 h-4.5" strokeWidth={1.75} />
+                      </div>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 leading-relaxed">
+                        {item.body}
+                      </p>
+                    </div>
                   );
                 })}
               </div>
-              <p className="text-xs text-gray-400">
-                {liveCount} live · {totalCount - liveCount} coming soon
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {filteredTools.map((tool) => (
-                <ToolCard key={tool.name} tool={tool} />
-              ))}
             </div>
           </section>
         </div>

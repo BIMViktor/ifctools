@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Upload,
@@ -27,6 +27,7 @@ import {
   runIdsValidation,
   type ValidateProgress,
 } from "@/lib/validateIds";
+import { takePendingIfc } from "@/lib/pendingIfc";
 import IdsPreview3D from "@/components/IdsPreview3D";
 
 type Status = "idle" | "ready" | "validating" | "done" | "error";
@@ -196,6 +197,16 @@ export default function IdsValidatorClient() {
     },
     [ifcFile]
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    void takePendingIfc().then((incoming) => {
+      if (!cancelled && incoming) loadIfc(incoming);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loadIfc]);
 
   const runValidation = useCallback(async () => {
     if (!ifcFile || !idsFile) return;

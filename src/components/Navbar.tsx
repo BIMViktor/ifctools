@@ -6,10 +6,8 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 const toolCategories = [
-  { label: "View & Explore", href: "/tools#view" },
-  { label: "Clean & Optimize", href: "/tools#clean" },
-  { label: "Data & Convert", href: "/tools#data" },
-  { label: "Validate & Check", href: "/tools#validate" },
+  { label: "Live tools", href: "/tools#live" },
+  { label: "Coming soon", href: "/tools#soon" },
 ];
 
 export default function Navbar() {
@@ -19,18 +17,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-6">
-
-        {/* Logo */}
         <Link href="/" className="shrink-0 flex items-baseline gap-0.5">
           <span className="text-[17px] font-bold tracking-tight text-gray-900">ifc</span>
           <span className="text-[17px] font-bold tracking-tight text-teal-600">2go</span>
           <span className="text-[11px] text-gray-400 font-normal ml-0.5">.com</span>
         </Link>
 
-        {/* Nav */}
         <nav className="hidden sm:flex items-center gap-1">
-
-          {/* Tools dropdown */}
           <div className="relative" onMouseLeave={() => setToolsOpen(false)}>
             <button
               onMouseEnter={() => setToolsOpen(true)}
@@ -69,26 +62,29 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/about"
+            href="/#pricing"
             className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
           >
-            About
+            Pricing
           </Link>
         </nav>
 
-        {/* Right actions */}
         <div className="flex items-center gap-2">
-          <button className="hidden sm:block px-3.5 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
+          <button
+            type="button"
+            title="Pro licensing & billing only — no files are ever stored"
+            aria-label="Pro licensing & billing only — no files are ever stored"
+            className="hidden sm:block px-3.5 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+          >
             Log in
           </button>
           <Link
             href="/viewer"
             className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold transition-colors"
           >
-            Open viewer
+            Open IFC File
           </Link>
         </div>
-
       </div>
     </header>
   );

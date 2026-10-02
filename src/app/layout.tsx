@@ -9,6 +9,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ifc2go.com"),
   title: "ifc2go — Every IFC tool you need, free in your browser",
   description:
     "Clean, validate, edit and organize IFC files instantly. No installs, no licence fees. IFC2x3, IFC4, IFC4.3 supported.",

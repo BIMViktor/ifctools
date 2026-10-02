@@ -40,6 +40,20 @@ const nextConfig: NextConfig = {
     config.experiments = { ...config.experiments, asyncWebAssembly: true };
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/tools/extractor",
+        destination: "/tools/property-extractor",
+        permanent: false,
+      },
+      {
+        source: "/tools/ids-validator",
+        destination: "/tools/validator",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

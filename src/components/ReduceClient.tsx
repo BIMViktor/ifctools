@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Upload,
@@ -20,6 +20,7 @@ import {
   type ReduceProgress,
   type ReduceResult,
 } from "@/lib/reduceIfcFile";
+import { takePendingIfc } from "@/lib/pendingIfc";
 
 type Status = "idle" | "loading" | "ready" | "optimizing" | "done" | "error";
 
@@ -77,6 +78,16 @@ export default function ReduceClient() {
       setStore(null);
     }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void takePendingIfc().then((incoming) => {
+      if (!cancelled && incoming) void loadFile(incoming);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loadFile]);
 
   const runOptimize = useCallback(async () => {
     if (!store || !file) return;

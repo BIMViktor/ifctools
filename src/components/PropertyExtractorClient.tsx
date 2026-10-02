@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Upload,
@@ -18,6 +18,7 @@ import {
   type ExtractProgress,
   type ExtractResult,
 } from "@/lib/extractPropertyTable";
+import { takePendingIfc } from "@/lib/pendingIfc";
 
 type Status = "idle" | "loading" | "ready" | "exporting" | "done" | "error";
 
@@ -48,6 +49,16 @@ export default function PropertyExtractorClient() {
       setStore(null);
     }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void takePendingIfc().then((incoming) => {
+      if (!cancelled && incoming) void loadFile(incoming);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loadFile]);
 
   const runExport = useCallback(async () => {
     if (!store || !file) return;

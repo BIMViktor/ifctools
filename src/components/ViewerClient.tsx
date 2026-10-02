@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import type { IfcDataStore } from "@ifc-lite/parser";
 import type { SpatialNode } from "@ifc-lite/data";
+import { takePendingIfc } from "@/lib/pendingIfc";
+
+const SAMPLE_IFC_URL =
+  "https://thatopen.github.io/engine_fragment/resources/ifc/school_str.ifc";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -329,6 +333,49 @@ export default function ViewerClient() {
       setStatus("error");
     }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      let incoming = await takePendingIfc();
+
+      if (!incoming && params.get("sample") === "1") {
+        setStatus("loading");
+        setProgress(2);
+        setProgressLabel("Fetching sample building…");
+        const response = await fetch(SAMPLE_IFC_URL);
+        if (!response.ok) throw new Error("Could not fetch the sample building");
+        const blob = await response.blob();
+        incoming = new File([blob], "sample-building.ifc", {
+          type: "application/octet-stream",
+        });
+      }
+
+      if (!incoming || cancelled) return;
+
+      const started = Date.now();
+      const tryLoad = () => {
+        if (cancelled) return;
+        if (rendererRef.current) {
+          void loadFile(incoming);
+          return;
+        }
+        if (Date.now() - started > 8000) return;
+        requestAnimationFrame(tryLoad);
+      };
+      tryLoad();
+    })().catch((e) => {
+      if (cancelled) return;
+      setError(e instanceof Error ? e.message : "Could not open file");
+      setStatus("error");
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loadFile]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();

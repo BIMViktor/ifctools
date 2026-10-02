@@ -204,8 +204,8 @@ export default function ColorizerClient() {
       });
       const result = await exporter.exportAsync({
         schema: file.dataStore.schemaVersion ?? "IFC4",
-        application: "ifctools.io",
-        description: `Praxi ${file.discipline} – ifctools.io`,
+        application: "ifc2go",
+        description: `Praxi ${file.discipline} – ifc2go.com`,
       });
       blob = new Blob([new Uint8Array(result.content)], {
         type: "application/octet-stream",
@@ -267,7 +267,7 @@ export default function ColorizerClient() {
             href="/"
             className="text-zinc-400 hover:text-white transition-colors text-sm shrink-0"
           >
-            ← ifctools<span className="text-indigo-400">.io</span>
+            ← ifc<span className="text-teal-400">2go</span>
           </Link>
           <span className="text-zinc-700">|</span>
           <span className="text-sm font-medium text-white truncate">
