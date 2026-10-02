@@ -7,36 +7,23 @@ import {
   Eye,
   GitCompareArrows,
   Palette,
-  Layers,
   Combine,
   Scissors,
-  RefreshCw,
   Move,
-  Network,
-  FileText,
   FileSpreadsheet,
-  ArrowUpFromLine,
   Sliders,
-  Calculator,
-  Type,
-  Trash2,
   Minimize2,
   Package,
-  UserX,
   Eraser,
-  FileOutput,
   FileCode,
   Box,
-  DownloadCloud,
   ShieldCheck,
   FilePlus,
-  Flame,
   Activity,
+  Grid3x3,
   Clock,
   LucideIcon,
 } from "lucide-react";
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 type Tool = {
   name: string;
@@ -48,8 +35,10 @@ type Tool = {
   category: string;
 };
 
-// ─── Tool registry ───────────────────────────────────────────────────────────
-
+/**
+ * Slimmed product matrix (~12–16 tools).
+ * Only tools with real routes may set `live: true`.
+ */
 const ALL_TOOLS: Tool[] = [
   // ── View ──────────────────────────────────────────────────────────────────
   {
@@ -96,21 +85,9 @@ const ALL_TOOLS: Tool[] = [
     category: "Organize",
   },
   {
-    name: "Schema Converter",
-    description: "Upgrade or downgrade models between IFC2x3, IFC4, and IFC4.3.",
-    icon: RefreshCw,
-    category: "Organize",
-  },
-  {
     name: "Model Transformer",
     description: "Shift, rotate, scale, or fix georeferencing and coordinates.",
     icon: Move,
-    category: "Organize",
-  },
-  {
-    name: "Manage IFC Storeys",
-    description: "Reassign elements that were exported on the wrong level.",
-    icon: Network,
     category: "Organize",
   },
 
@@ -125,29 +102,9 @@ const ALL_TOOLS: Tool[] = [
     category: "Properties",
   },
   {
-    name: "Excel to IFC",
-    description: "Update IFC properties by importing values from an edited spreadsheet.",
-    href: "/tools/excel-to-ifc",
-    icon: ArrowUpFromLine,
-    live: true,
-    category: "Properties",
-  },
-  {
     name: "Property Editor",
     description: "Add, remove, or bulk-edit property sets and parameters on the fly.",
     icon: Sliders,
-    category: "Properties",
-  },
-  {
-    name: "Quantity Takeoff",
-    description: "Generate grouped element quantities without a desktop takeoff tool.",
-    icon: Calculator,
-    category: "Properties",
-  },
-  {
-    name: "Bulk Rename by Pattern",
-    description: "Standardize element names in bulk using dynamic token patterns.",
-    icon: Type,
     category: "Properties",
   },
 
@@ -170,20 +127,8 @@ const ALL_TOOLS: Tool[] = [
     category: "Clean",
   },
   {
-    name: "Delete IFC Elements",
-    description: "Remove entire categories (like rebar or proxy objects) from the model.",
-    icon: Trash2,
-    category: "Clean",
-  },
-  {
-    name: "Anonymize IFC",
-    description: "Scrub authors, organizations, and application headers before external sharing.",
-    icon: UserX,
-    category: "Clean",
-  },
-  {
-    name: "Delete IFC Properties",
-    description: "Strip sensitive metadata, costs, or internal notes before sharing.",
+    name: "Sanitize IFC",
+    description: "Anonymize authors and strip sensitive properties before external sharing.",
     icon: Eraser,
     category: "Clean",
   },
@@ -196,26 +141,26 @@ const ALL_TOOLS: Tool[] = [
     category: "Convert",
   },
   {
-    name: "IFC to DXF (3D)",
-    description: "Convert IFC geometry to a lightweight 3D triangle mesh for AutoCAD.",
+    name: "IFC to glTF / GLB",
+    description: "Convert IFC geometry to glTF or GLB for web viewers, game engines, and XR.",
     icon: Box,
-    category: "Convert",
-  },
-  {
-    name: "Navisworks Exporter",
-    description: "Link to our free open-source desktop plug-in for Navisworks coordinate files.",
-    icon: DownloadCloud,
     category: "Convert",
   },
 
   // ── Validate ──────────────────────────────────────────────────────────────
   {
-    name: "IFC Validator",
-    description: "Check schema compliance and required properties against IDS rules.",
+    name: "IDS Validator",
+    description: "Validate models against buildingSMART IDS and export failures as BCF 2.1.",
     href: "/tools/validator",
     icon: ShieldCheck,
     live: true,
     popular: true,
+    category: "Validate",
+  },
+  {
+    name: "IFC Health Check",
+    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
+    icon: Activity,
     category: "Validate",
   },
   {
@@ -225,23 +170,15 @@ const ALL_TOOLS: Tool[] = [
     category: "Validate",
   },
   {
-    name: "IFC Clash Detection",
-    description: "Detect geometric conflicts and intersection issues between building systems.",
-    icon: Flame,
-    category: "Validate",
-  },
-  {
-    name: "IFC Health Check",
-    description: "Audit models for corrupt geometry, duplicate GUIDs, and extreme coordinates.",
-    icon: Activity,
+    name: "BSAB / CoClass",
+    description: "Classify and validate elements against Nordic BSAB 96 and CoClass standards.",
+    icon: Grid3x3,
     category: "Validate",
   },
 ];
 
 const CATEGORIES = ["All", "View", "Organize", "Properties", "Clean", "Convert", "Validate"] as const;
 type Category = (typeof CATEGORIES)[number];
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function ToolCard({ tool }: { tool: Tool }) {
   const Icon = tool.icon;
@@ -254,7 +191,6 @@ function ToolCard({ tool }: { tool: Tool }) {
           : "border-gray-100 cursor-default"
       }`}
     >
-      {/* Coming soon badge */}
       {!tool.live && (
         <span className="absolute top-3.5 right-3.5 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
           <Clock className="w-2.5 h-2.5" />
@@ -262,7 +198,6 @@ function ToolCard({ tool }: { tool: Tool }) {
         </span>
       )}
 
-      {/* Icon */}
       <div
         className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
           tool.live
@@ -273,7 +208,6 @@ function ToolCard({ tool }: { tool: Tool }) {
         <Icon className="w-4.5 h-4.5" strokeWidth={1.75} />
       </div>
 
-      {/* Text */}
       <div>
         <p
           className={`text-sm font-semibold leading-snug transition-colors ${
@@ -290,12 +224,14 @@ function ToolCard({ tool }: { tool: Tool }) {
   );
 
   if (tool.live && tool.href) {
-    return <Link href={tool.href} className="h-full">{inner}</Link>;
+    return (
+      <Link href={tool.href} className="h-full">
+        {inner}
+      </Link>
+    );
   }
   return inner;
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<Category>("All");
@@ -312,8 +248,6 @@ export default function HomePage() {
       <Navbar />
 
       <main className="flex-1 bg-[#F9FAFB]">
-
-        {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section className="bg-white border-b border-gray-100">
           <div className="max-w-6xl mx-auto px-6 py-14 sm:py-16 text-center">
             <h1 className="text-4xl sm:text-[2.75rem] font-bold tracking-tight text-gray-900 leading-[1.15]">
@@ -343,8 +277,6 @@ export default function HomePage() {
         </section>
 
         <div className="max-w-6xl mx-auto px-6">
-
-          {/* ── Popular tools ─────────────────────────────────────────── */}
           <section className="pt-10 pb-6">
             <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
               Popular tools
@@ -356,9 +288,7 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* ── Full tool grid ───────────────────────────────────────── */}
           <section id="tools" className="pb-20">
-            {/* Tab bar */}
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6 pt-4 border-t border-gray-200">
               <div className="flex gap-1 flex-wrap">
                 {CATEGORIES.map((cat) => {
@@ -393,7 +323,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {filteredTools.map((tool) => (
                 <ToolCard key={tool.name} tool={tool} />
@@ -403,15 +332,14 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* ── Trust strip ─────────────────────────────────────────────── */}
       <footer className="bg-white border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap justify-center sm:justify-start gap-x-8 gap-y-2 text-xs text-gray-500 font-medium">
             {[
               "No install required",
-              "Files auto-deleted",
+              "Files stay in your browser",
               "IFC2x3 · IFC4 · IFC4.3",
-              "Free tier available",
+              "Free to use",
             ].map((item) => (
               <span key={item} className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
